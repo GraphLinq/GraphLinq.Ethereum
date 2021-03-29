@@ -27,7 +27,7 @@ jobs:
           command: dotnet nuget add source -n graphlinq -u $GITHUB_USERNAME -p $GITHUB_TOKEN "https://nuget.pkg.github.com/GraphLinq/index.json" --store-password-in-clear-text
       - run:
           name: Publish nuget
-          command: dotnet nuget push "nuget_build/NodeBlock.Plugin.Ethereum.$BUILD_VERSION.nupkg" --api-key $GITHUB_TOKEN --source "graphlinq"  --no-service-endpoint
+          command: dotnet nuget push "nuget_build/GraphLinq.Ethereum.$BUILD_VERSION.nupkg" --api-key $GITHUB_TOKEN --source "graphlinq"  --no-service-endpoint
 workflows:
   version: 2
   build-master:

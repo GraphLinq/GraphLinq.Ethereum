@@ -5,6 +5,13 @@
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <PublishSingleFile>true</PublishSingleFile>
     <PublishTrimmed>true</PublishTrimmed>
+
+    <PackageId>GraphLinq.Ethereum</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>GraphLinq Team</Authors>
+    <Company>GraphLinq</Company>
+    <PackageDescription>This package allow the GraphLinq Engine to interact with the Ethereum Blockchain</PackageDescription>
+    <RepositoryUrl>https://github.com/GraphLinq/GraphLinq.Ethereum</RepositoryUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

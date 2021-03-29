@@ -9,7 +9,7 @@ using static NodeBlock.Plugin.Ethereum.Nodes.Eth.Models.ERC20;
 
 namespace NodeBlock.Plugin.Ethereum.Nodes.Eth
 {
-    [NodeDefinition("GetERC20BalanceNode", "Get ERC20 Balance", NodeTypeEnum.Function, "Blockchain.Ethereum")]
+    [NodeDefinition("GetERC20BalanceNode", "Get ERC20 Balance", NodeTypeEnum.Function, "Blockchain.Ethereum.ERC20")]
     [NodeGraphDescription("Get the balance of an address for a ERC20")]
     public class GetERC20BalanceNode : Node
     {

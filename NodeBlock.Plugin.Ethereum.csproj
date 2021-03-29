@@ -31,6 +31,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\GraphLinq.Encoding\NodeBlock.Engine.Encoding.csproj" />
+    <ProjectReference Include="..\GraphLinq.Engine\NodeBlock.Engine.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="Graphql.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -45,16 +50,8 @@
     </EmbeddedResource>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Nodes\Eth\CoinCreator\Contracts\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\GraphLinq.Engine\NodeBlock.Engine.csproj" />
-  </ItemGroup>
-
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Condition=" '$(OS)' != 'Unix' " Command="copy /Y &quot;$(TargetDir)$(ProjectName).dll&quot; &quot;$(SolutionDir)\NodeBlock.CLI\bin\Debug\netcoreapp3.1\plugins&quot;" />
+    <Exec Condition=" '$(OS)' != 'Unix' " Command="copy /Y &quot;$(TargetDir)$(ProjectName).dll&quot; &quot;$(SolutionDir)\GraphLinq.CLI\bin\Debug\netcoreapp3.1\plugins&quot;" />
   </Target>
 
 </Project>

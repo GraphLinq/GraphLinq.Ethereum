@@ -19,6 +19,9 @@ jobs:
       - run:
           name: Build
           command: dotnet build -c Release
+      - store_artifacts:
+          path: bin/Release/netcoreapp3.1/NodeBlock.Plugin.Ethereum.dll
+          destination: NodeBlock.Plugin.Ethereum.dll
       - run:
           name: Pack
           command: dotnet pack --output nuget_build --configuration Release -p:Version=$BUILD_VERSION

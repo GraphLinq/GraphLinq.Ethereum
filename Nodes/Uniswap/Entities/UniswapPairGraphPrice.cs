@@ -17,12 +17,26 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Uniswap.Entities
 
             [JsonProperty("token1Price")]
             public string Token1Price { get; set; }
+
+
+            [JsonProperty("reserve0")]
+            public string Reserve0 { get; set; }
+
+            [JsonProperty("reserve1")]
+            public string Reserve1 { get; set; }
+        }
+        public class Bundle
+        {
+            [JsonProperty("ethPrice")]
+            public string EthPrice { get; set; }
         }
 
         public class Data
         {
             [JsonProperty("pair")]
             public Pair Pair { get; set; }
+            [JsonProperty("bundle")]
+            public Bundle Bundle { get; set; }
         }
 
     }

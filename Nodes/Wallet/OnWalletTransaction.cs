@@ -52,22 +52,29 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Wallet
 
         private async void onBlock(Block Block)
         {
-            EthConnection ethConnection = this.InParameters["connection"].GetValue() as EthConnection;
-            var blockInformations = await ethConnection.Web3Client.Eth.Blocks.GetBlockWithTransactionsByNumber.SendRequestAsync(Block.Number);
-            foreach (var tx in blockInformations.Transactions)
+            try
             {
-                var instanciatedParameters = this.InstanciateParametersForCycle();
+                EthConnection ethConnection = this.InParameters["connection"].GetValue() as EthConnection;
+                var blockInformations = await ethConnection.Web3Client.Eth.Blocks.GetBlockWithTransactionsByNumber.SendRequestAsync(Block.Number);
+                foreach (var tx in blockInformations.Transactions)
+                {
+                    var instanciatedParameters = this.InstanciateParametersForCycle();
 
-                if (tx.From != null && this.InParameters["walletAddress"].GetValue().ToString().ToLower() == tx.From.ToLower())
-                {
-                    instanciatedParameters["transaction"].SetValue(tx);
-                    this.Graph.AddCycle(this, instanciatedParameters);
+                    if (tx.From != null && this.InParameters["walletAddress"].GetValue().ToString().ToLower() == tx.From.ToLower())
+                    {
+                        instanciatedParameters["transaction"].SetValue(tx);
+                        this.Graph.AddCycle(this, instanciatedParameters);
+                    }
+                    else if (tx.To != null && this.InParameters["walletAddress"].GetValue().ToString().ToLower() == tx.To.ToLower())
+                    {
+                        instanciatedParameters["transaction"].SetValue(tx);
+                        this.Graph.AddCycle(this, instanciatedParameters);
+                    }
                 }
-                else if (tx.To != null && this.InParameters["walletAddress"].GetValue().ToString().ToLower() == tx.To.ToLower())
-                {
-                    instanciatedParameters["transaction"].SetValue(tx);
-                    this.Graph.AddCycle(this, instanciatedParameters);
-                }
+            }
+            catch
+            {
+                this.Graph.Stop();
             }
         }
 

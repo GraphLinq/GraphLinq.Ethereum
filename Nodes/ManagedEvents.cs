@@ -87,42 +87,26 @@ namespace NodeBlock.Plugin.Ethereum.Nodes
 
                     try
                     {
-                        var subscription = new EthNewBlockHeadersObservableSubscription(SocketClient);
-                        DateTime? lastBlockNotification = null;
-                        double secondsSinceLastBlock = 0;
-
-                        subscription.GetSubscriptionDataResponsesAsObservable().Subscribe(block =>
+                        // Keep ping for infura
+                        var handler = new EthBlockNumberObservableHandler(this.SocketClient);
+                        handler.GetResponseAsObservable().Subscribe(x => { });
+                        var delay = Task.Delay(TimeSpan.FromSeconds(30));
+                        var result = await Task.WhenAny(handler.SendRequestAsync(), delay);
+                        if(result == delay)
                         {
-                            secondsSinceLastBlock = (lastBlockNotification == null) ? 0 : (int)DateTime.Now.Subtract(lastBlockNotification.Value).TotalSeconds;
-                            lastBlockNotification = DateTime.Now;
-                            var utcTimestamp = DateTimeOffset.FromUnixTimeSeconds((long)block.Timestamp.Value);
-                        });
-
-                        // subscribe
-                        await subscription.SubscribeAsync();
-
-                        // run for a minute before unsubscribing
-                        await Task.Delay(TimeSpan.FromMinutes(3));
-
-                        try
-                        {
-                            // unsubscribe
-                            await subscription.UnsubscribeAsync();
-                        }
-                        catch (Exception error)
-                        {
-                            Console.WriteLine(error);
+                            Console.WriteLine("Timeout when trying to request the block header");
+                            Environment.Exit(-1);
+                            return;
                         }
 
-                        if (lastBlockNotification.HasValue)
+                        var stateType = typeof(StreamingWebSocketClient).GetField("_clientWebSocket", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                        var socket = (System.Net.WebSockets.ClientWebSocket)stateType.GetValue(this.SocketClient);
+                        if (socket.State != System.Net.WebSockets.WebSocketState.Open)
                         {
-                            DateTime now = DateTime.Now;
-                            double seconds = now.Subtract(lastBlockNotification.Value).TotalSeconds;
-                            if (seconds > 180)
-                            {
-                                Console.WriteLine("Managed events: No new block since 180 seconds, restarting engine..");
-                                Environment.Exit(-1);
-                            }
+                            MethodInfo connectMethod = this.GetType().GetMethod("ConnectWebSocketAsync",
+                                BindingFlags.NonPublic | BindingFlags.Instance);
+                            connectMethod.Invoke(this, new object[] { });
+                            Console.WriteLine("Socket refreshed");
                         }
                     }
                     catch (Exception error)
@@ -130,7 +114,7 @@ namespace NodeBlock.Plugin.Ethereum.Nodes
                         Console.WriteLine(error);
                         Environment.Exit(-1);
                     }
-                    await Task.Delay(TimeSpan.FromSeconds(1));
+                    await Task.Delay(TimeSpan.FromSeconds(30));
                 }
             }).Start();
         }

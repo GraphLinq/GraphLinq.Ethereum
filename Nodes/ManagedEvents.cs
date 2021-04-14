@@ -87,20 +87,42 @@ namespace NodeBlock.Plugin.Ethereum.Nodes
 
                     try
                     {
-                        // Keep ping for infura
-                        var handler = new EthBlockNumberObservableHandler(this.SocketClient);
-                        handler.GetResponseAsObservable().Subscribe(x => { });
-                        await handler.SendRequestAsync();
-                        await Task.Delay(TimeSpan.FromSeconds(30));
+                        var subscription = new EthNewBlockHeadersObservableSubscription(SocketClient);
+                        DateTime? lastBlockNotification = null;
+                        double secondsSinceLastBlock = 0;
 
-                        var stateType = typeof(StreamingWebSocketClient).GetField("_clientWebSocket", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                        var socket = (System.Net.WebSockets.ClientWebSocket)stateType.GetValue(this.SocketClient);
-                        if(socket.State != System.Net.WebSockets.WebSocketState.Open)
+                        subscription.GetSubscriptionDataResponsesAsObservable().Subscribe(block =>
                         {
-                            MethodInfo connectMethod = this.GetType().GetMethod("ConnectWebSocketAsync",
-                                BindingFlags.NonPublic | BindingFlags.Instance);
-                            connectMethod.Invoke(this, new object[] { });
-                            Console.WriteLine("Socket refreshed");
+                            secondsSinceLastBlock = (lastBlockNotification == null) ? 0 : (int)DateTime.Now.Subtract(lastBlockNotification.Value).TotalSeconds;
+                            lastBlockNotification = DateTime.Now;
+                            var utcTimestamp = DateTimeOffset.FromUnixTimeSeconds((long)block.Timestamp.Value);
+                        });
+
+                        // subscribe
+                        await subscription.SubscribeAsync();
+
+                        // run for a minute before unsubscribing
+                        await Task.Delay(TimeSpan.FromMinutes(3));
+
+                        try
+                        {
+                            // unsubscribe
+                            await subscription.UnsubscribeAsync();
+                        }
+                        catch (Exception error)
+                        {
+                            Console.WriteLine(error);
+                        }
+
+                        if (lastBlockNotification.HasValue)
+                        {
+                            DateTime now = DateTime.Now;
+                            double seconds = now.Subtract(lastBlockNotification.Value).TotalSeconds;
+                            if (seconds > 180)
+                            {
+                                Console.WriteLine("Managed events: No new block since 180 seconds, restarting engine..");
+                                Environment.Exit(-1);
+                            }
                         }
                     }
                     catch (Exception error)
@@ -108,7 +130,7 @@ namespace NodeBlock.Plugin.Ethereum.Nodes
                         Console.WriteLine(error);
                         Environment.Exit(-1);
                     }
-                    await Task.Delay(TimeSpan.FromSeconds(30));
+                    await Task.Delay(TimeSpan.FromSeconds(1));
                 }
             }).Start();
         }

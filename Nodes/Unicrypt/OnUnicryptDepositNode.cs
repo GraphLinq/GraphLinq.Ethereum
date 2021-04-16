@@ -59,8 +59,8 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Unicrypt
                         instanciatedParameters["lpToken"].SetValue(decoded.Event.LpToken);
                         instanciatedParameters["user"].SetValue(decoded.Event.User);
                         instanciatedParameters["amount"].SetValue(Web3.Convert.FromWei(decoded.Event.Amount));
-                        instanciatedParameters["lockDate"].SetValue(decoded.Event.LockDate);
-                        instanciatedParameters["lockDate"].SetValue(decoded.Event.UnlockDate);
+                        instanciatedParameters["lockDate"].SetValue((long)decoded.Event.LockDate);
+                        instanciatedParameters["unlockDate"].SetValue((long)decoded.Event.UnlockDate);
 
                         this.Graph.AddCycle(this, instanciatedParameters);
                     }

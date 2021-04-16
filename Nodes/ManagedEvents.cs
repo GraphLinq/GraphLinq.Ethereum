@@ -98,16 +98,6 @@ namespace NodeBlock.Plugin.Ethereum.Nodes
                             Environment.Exit(-1);
                             return;
                         }
-
-                        var stateType = typeof(StreamingWebSocketClient).GetField("_clientWebSocket", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                        var socket = (System.Net.WebSockets.ClientWebSocket)stateType.GetValue(this.SocketClient);
-                        if (socket.State != System.Net.WebSockets.WebSocketState.Open)
-                        {
-                            MethodInfo connectMethod = this.GetType().GetMethod("ConnectWebSocketAsync",
-                                BindingFlags.NonPublic | BindingFlags.Instance);
-                            connectMethod.Invoke(this, new object[] { });
-                            Console.WriteLine("Socket refreshed");
-                        }
                     }
                     catch (Exception error)
                     {

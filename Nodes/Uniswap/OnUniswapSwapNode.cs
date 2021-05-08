@@ -23,6 +23,7 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Uniswap
             this.InParameters.Add("connection", new NodeParameter(this, "connection", typeof(string), true));
             this.InParameters.Add("contractAddress", new NodeParameter(this, "contractAddress", typeof(string), true));
 
+            this.OutParameters.Add("transactionHash", new NodeParameter(this, "transactionHash", typeof(string), false));
             this.OutParameters.Add("sender", new NodeParameter(this, "sender", typeof(string), false));
             this.OutParameters.Add("to", new NodeParameter(this, "to", typeof(string), false));
             this.OutParameters.Add("amount0In", new NodeParameter(this, "amount0In", typeof(double), false));
@@ -78,6 +79,7 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Uniswap
             if (!string.IsNullOrEmpty(contractAddress) && eventData.Response.Address.ToLower() != contractAddress.ToLower()) return;
 
             var instanciatedParameters = this.InstanciateParametersForCycle();
+            instanciatedParameters["transactionHash"].SetValue(eventData.Response.TransactionHash);
             instanciatedParameters["sender"].SetValue(decoded.Event.Sender);
             instanciatedParameters["to"].SetValue(decoded.Event.To);
             instanciatedParameters["amount0In"].SetValue(Web3.Convert.FromWei(decoded.Event.Amount0In));

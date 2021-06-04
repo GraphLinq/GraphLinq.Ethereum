@@ -1,5 +1,6 @@
 ﻿using Nethereum.JsonRpc.WebSocketStreamingClient;
 using Nethereum.Web3;
+using Nethereum.Web3.Accounts;
 using Newtonsoft.Json;
 using NodeBlock.Engine;
 using NodeBlock.Engine.Attributes;
@@ -54,6 +55,18 @@ namespace NodeBlock.Plugin.Ethereum.Nodes
                 this.SocketClient.StartAsync().Wait();
             }
             this.Next();
+        }
+
+        public Web3 InstanciateWeb3Account(Account account)
+        {
+            if (this.InParameters["url"].GetValue() == null || this.InParameters["socketUrl"].GetValue() == null)
+            {
+                return new Web3(account, Plugin.Web3ClientETH.Client);
+            }
+            else
+            {
+                return new Web3(account, this.Web3Client.Client);
+            }
         }
 
         public override void OnStop()

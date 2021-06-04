@@ -13,6 +13,9 @@ using System.Collections.Concurrent;
 using System.Linq;
 using NodeBlock.Plugin.Ethereum.Nodes;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using NodeBlock.Engine.Storage.MariaDB;
+using Microsoft.EntityFrameworkCore;
 
 namespace NodeBlock.Plugin.Ethereum
 {
@@ -38,6 +41,8 @@ namespace NodeBlock.Plugin.Ethereum
 
         public static bool PluginAlive = true;
 
+        public static ServiceProvider Services;
+
         public override void Load()
         {
             // ETH
@@ -59,6 +64,16 @@ namespace NodeBlock.Plugin.Ethereum
             SocketClientBSC = new StreamingWebSocketClient(WEB_3_WS_URL_BSC);
 
             SocketClientBSC.StartAsync().Wait();
+
+            // Init database plugin
+            Services = new ServiceCollection()
+                .AddScoped(provider => provider.GetService<Storage.DatabaseStorage>())
+                .AddDbContextPool<Storage.DatabaseStorage>(options =>
+                {
+                    options.UseMySQL(
+                        Environment.GetEnvironmentVariable("mariadb_uri"));
+                })
+                .BuildServiceProvider();
 
 
             //Managers AutoManaged Events

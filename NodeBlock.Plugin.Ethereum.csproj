@@ -31,6 +31,7 @@
     <PackageReference Include="GraphQL.NewtonsoftJson" Version="3.3.2" />
     <PackageReference Include="Nethereum.ABI" Version="3.8.0" />
     <PackageReference Include="Nethereum.Contracts" Version="3.8.0" />
+    <PackageReference Include="Nethereum.HdWallet" Version="3.8.0" />
     <PackageReference Include="Nethereum.JsonRpc.RpcClient" Version="3.8.0" />
     <PackageReference Include="Nethereum.JsonRpc.WebSocketClient" Version="3.8.0" />
     <PackageReference Include="Nethereum.RPC" Version="3.8.0" />
@@ -56,6 +57,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Graphql.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Nodes\ChainLink\" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

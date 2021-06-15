@@ -14,7 +14,6 @@ using NodeBlock.Engine.Attributes;
 
 namespace NodeBlock.Plugin.Ethereum.Nodes.Wallet.ManagedWallet
 {
-    [ExportableObject("ManagedEthereumWallet")]
     public class ManagedWallet
     {
         public ManagedWallet(Storage.Entities.ManagedWallet managedWalletEntity)
@@ -41,6 +40,7 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Wallet.ManagedWallet
             }  
         }
 
+        [ExportableObject("ManagedEthereumWallet.GetOrCreateManagedWallet")]
         public static ManagedWallet GetOrCreateManagedWallet(int walletId, string name, string password)
         {
             using (var scope = Plugin.Services.CreateScope())
@@ -115,6 +115,11 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Wallet.ManagedWallet
         public Account GetAccount()
         {
             return new Account(this.GetPrivateKey());
+        }
+
+        public Storage.Entities.ManagedWallet GetEntity()
+        {
+            return this.ManagedWalletEntity;
         }
     }
 }

@@ -41,7 +41,6 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Uniswap
 
         public override void SetupEvent()
         {
-            Console.WriteLine("This shit got setup few times?");
             if (this.InParameters["contractAddress"].GetValue() != null)
                 this.contractAddress = this.InParameters["contractAddress"].GetValue().ToString();
 

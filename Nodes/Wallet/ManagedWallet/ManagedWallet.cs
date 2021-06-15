@@ -10,9 +10,11 @@ using Nethereum.Hex.HexConvertors.Extensions;
 using Nethereum.HdWallet;
 using System.Security.Cryptography;
 using System.IO;
+using NodeBlock.Engine.Attributes;
 
 namespace NodeBlock.Plugin.Ethereum.Nodes.Wallet.ManagedWallet
 {
+    [ExportableObject("ManagedEthereumWallet")]
     public class ManagedWallet
     {
         public ManagedWallet(Storage.Entities.ManagedWallet managedWalletEntity)
@@ -23,6 +25,21 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Wallet.ManagedWallet
 
         public Storage.Entities.ManagedWallet ManagedWalletEntity { get; }
         public int Gwei { get; set; }
+
+        public static Tuple<string, string> GenerateNewAddress(string password)
+        {
+            using (RijndaelManaged rijndael = new RijndaelManaged())
+            {
+                rijndael.Key = Encoding.Default.GetBytes(Environment.GetEnvironmentVariable("managed_wallet_key"));
+                rijndael.IV = Encoding.Default.GetBytes(Environment.GetEnvironmentVariable("managed_wallet_key_iv"));
+                ICryptoTransform encryptor = rijndael.CreateEncryptor(rijndael.Key, rijndael.IV);
+                Mnemonic mnemo = new Mnemonic(Wordlist.English, WordCount.Twelve);
+                var wallet = new Nethereum.HdWallet.Wallet(mnemo.ToString(), password);
+                var privateKey = wallet.GetPrivateKey(0);
+
+                return new Tuple<string, string>(wallet.GetAddresses(1)[0], privateKey.ToString());
+            }  
+        }
 
         public static ManagedWallet GetOrCreateManagedWallet(int walletId, string name, string password)
         {

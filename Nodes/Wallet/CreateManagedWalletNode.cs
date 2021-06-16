@@ -19,7 +19,6 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Wallet
             this.InParameters.Add("password", new NodeParameter(this, "password", typeof(string), true));
             this.OutParameters.Add("managedWallet", new NodeParameter(this, "managedWallet", typeof(ManagedWallet.ManagedWallet), false));
             this.OutParameters.Add("address", new NodeParameter(this, "address", typeof(string), false));
-
         }
 
         public override bool CanBeExecuted => true;
@@ -31,7 +30,7 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Wallet
             this.Graph.AppendLog("warning", "Remember to backup your managed wallet in the GraphLinq Dashboard !");
             var name = this.InParameters["walletName"].GetValue().ToString();
             var password = this.InParameters["password"].GetValue().ToString();
-            var managedWallet = ManagedWallet.ManagedWallet.GetOrCreateManagedWallet(this.Graph.currentContext.walletIdentifier, name, password);
+            var managedWallet = ManagedWallet.ManagedWallet.GetOrCreateManagedWallet(this.Graph.currentContext.walletIdentifier, name);
 
             this.OutParameters["managedWallet"].SetValue(managedWallet);
             this.OutParameters["address"].SetValue(managedWallet.ManagedWalletEntity.PublicKey);

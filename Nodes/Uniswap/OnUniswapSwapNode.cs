@@ -1,6 +1,7 @@
 ﻿using Nethereum.Contracts;
 using Nethereum.JsonRpc.Client.Streaming;
 using Nethereum.RPC.Eth.Subscriptions;
+using Nethereum.RPC.Reactive.Eth.Subscriptions;
 using Nethereum.Web3;
 using NodeBlock.Engine;
 using NodeBlock.Engine.Attributes;
@@ -13,7 +14,7 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Uniswap
 {
     [NodeDefinition("OnUniswapSwapNode", "On Uniswap Swap", NodeTypeEnum.Event, "Uniswap")]
     [NodeGraphDescription("Event that trigger on each new swap request on Uniswap from a specific token smart-contract address")]
-    public class OnUniswapSwapNode : Node, IEventEthereumNode
+    public class OnUniswapSwapNode : Node
     {
         public OnUniswapSwapNode(string id, BlockGraph graph)
             : base(id, graph, typeof(OnUniswapSwapNode).Name)
@@ -33,7 +34,7 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Uniswap
         }
 
         private string contractAddress = "";
-        private CustomUniswapSwapEvent ethLogsSubscription;
+        private EthLogsObservableSubscription ethLogsSubscription;
 
         public override bool CanBeExecuted => false;
 
@@ -51,26 +52,24 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Uniswap
             //    return;
             //}
 
-            var filterTransfers = Event<SwapEventDTOBase>.GetEventABI().CreateFilterInput(this.contractAddress);
-            this.ethLogsSubscription = new CustomUniswapSwapEvent(ethConnection.SocketClient);
-            ethLogsSubscription.SubscriptionDataResponse += OnEventNode;
-            ethLogsSubscription.SubscribeAsync(filterTransfers).Wait();
-
+            var filterTransfers = ethConnection.Web3Client.Eth.GetEvent<SwapEventDTOBase>(this.contractAddress).CreateFilterInput();
+            this.ethLogsSubscription = new EthLogsObservableSubscription(ethConnection.SocketClient);
+            this.ethLogsSubscription.GetSubscriptionDataResponsesAsObservable().Subscribe(log =>
+            {
+                if (!string.IsNullOrEmpty(contractAddress) && log.Address.ToLower() != contractAddress.ToLower()) return;
+                var decoded = Event<SwapEventDTOBase>.DecodeEvent(log);
+                if (decoded == null) return;
+                OnEvent(decoded.Event);
+            });
         }
 
         public override void OnStop()
         {
             EthConnection ethConnection = this.InParameters["connection"].GetValue() as EthConnection;
-            if (ethConnection.UseManaged)
-            {
-                string eventType = ethLogsSubscription.GetType().ToString();
-                Plugin.EventsManagerEth.RemoveEventNode(eventType, this);
-                return;
-            }
             this.ethLogsSubscription.UnsubscribeAsync().Wait();
         }
     
-        public void OnEventNode(object sender, dynamic e)
+        private void OnEvent(SwapEventDTOBase evt)
         {
             StreamingEventArgs<Nethereum.RPC.Eth.DTOs.FilterLog> eventData = e;
             var decoded = Event<SwapEventDTOBase>.DecodeEvent(eventData.Response);

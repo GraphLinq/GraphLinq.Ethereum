@@ -61,6 +61,7 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Uniswap
                 if (decoded == null) return;
                 OnEvent(decoded.Event, log.TransactionHash);
             });
+            this.ethLogsSubscription.SubscribeAsync(filterTransfers);
         }
 
         public override void OnStop()

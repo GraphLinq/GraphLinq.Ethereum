@@ -64,6 +64,7 @@ namespace NodeBlock.Plugin.Ethereum.Nodes
     public class ManagedEthereumEvents
     {
         public ConcurrentDictionary<string, Tuple<dynamic, ConcurrentDictionary<BlockGraph, IEventEthereumNode>>> Events;
+        public ConcurrentDictionary<string, Tuple<dynamic, ConcurrentDictionary<BlockGraph, IEventEthereumNode>>> UniwapEvents;
         public StreamingWebSocketClient SocketClient { get; set; }
         public Web3 Web3Client { get; set; }
 
@@ -74,6 +75,7 @@ namespace NodeBlock.Plugin.Ethereum.Nodes
             SocketClient = socket;
             Web3Client = web3Client;
             Events = new ConcurrentDictionary<string, Tuple<dynamic, ConcurrentDictionary<BlockGraph, IEventEthereumNode>>>();
+            UniwapEvents = new ConcurrentDictionary<string, Tuple<dynamic, ConcurrentDictionary<BlockGraph, IEventEthereumNode>>>();
             IsSubscribedLoop();
             CheckWebSocketIsAlive();
         }
@@ -268,7 +270,7 @@ namespace NodeBlock.Plugin.Ethereum.Nodes
         {
             CustomUniswapSwapEvent newEvent = new CustomUniswapSwapEvent(SocketClient);
             string type = newEvent.GetType().ToString();
-            if (!Events.ContainsKey(type))
+            if (!UniwapEvents.ContainsKey(type + "_" + from))
             {
                 var filterTransfers = Event<Uniswap.Entities.UniswapPair.SwapEventDTOBase>.GetEventABI().CreateFilterInput(from);
                 newEvent.SubscriptionDataResponse += OnEvent;

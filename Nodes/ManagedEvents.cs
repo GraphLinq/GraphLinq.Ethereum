@@ -32,6 +32,11 @@ namespace NodeBlock.Plugin.Ethereum.Nodes
         {
 
         }
+
+        internal object GetSubscriptionDataResponsesAsObservable()
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public class CustomUniswapSyncEvent : EthLogsSubscription

@@ -59,7 +59,7 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Uniswap
                 if (!string.IsNullOrEmpty(contractAddress) && log.Address.ToLower() != contractAddress.ToLower()) return;
                 var decoded = Event<SwapEventDTOBase>.DecodeEvent(log);
                 if (decoded == null) return;
-                OnEvent(decoded.Event);
+                OnEvent(decoded.Event, log.TransactionHash);
             });
         }
 
@@ -69,20 +69,16 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Uniswap
             this.ethLogsSubscription.UnsubscribeAsync().Wait();
         }
     
-        private void OnEvent(SwapEventDTOBase evt)
+        private void OnEvent(SwapEventDTOBase evt, string txHash)
         {
-            StreamingEventArgs<Nethereum.RPC.Eth.DTOs.FilterLog> eventData = e;
-            var decoded = Event<SwapEventDTOBase>.DecodeEvent(eventData.Response);
-            if (decoded == null) return;
-
             var instanciatedParameters = this.InstanciateParametersForCycle();
-            instanciatedParameters["transactionHash"].SetValue(eventData.Response.TransactionHash);
-            instanciatedParameters["sender"].SetValue(decoded.Event.Sender);
-            instanciatedParameters["to"].SetValue(decoded.Event.To);
-            instanciatedParameters["amount0In"].SetValue(Web3.Convert.FromWei(decoded.Event.Amount0In));
-            instanciatedParameters["amount1In"].SetValue(Web3.Convert.FromWei(decoded.Event.Amount1In));
-            instanciatedParameters["amount0Out"].SetValue(Web3.Convert.FromWei(decoded.Event.Amount0Out));
-            instanciatedParameters["amount1Out"].SetValue(Web3.Convert.FromWei(decoded.Event.Amount1Out));
+            instanciatedParameters["transactionHash"].SetValue(txHash);
+            instanciatedParameters["sender"].SetValue(evt.Sender);
+            instanciatedParameters["to"].SetValue(evt.To);
+            instanciatedParameters["amount0In"].SetValue(Web3.Convert.FromWei(evt.Amount0In));
+            instanciatedParameters["amount1In"].SetValue(Web3.Convert.FromWei(evt.Amount1In));
+            instanciatedParameters["amount0Out"].SetValue(Web3.Convert.FromWei(evt.Amount0Out));
+            instanciatedParameters["amount1Out"].SetValue(Web3.Convert.FromWei(evt.Amount1Out));
 
             this.Graph.AddCycle(this, instanciatedParameters);
         }

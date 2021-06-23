@@ -11,6 +11,7 @@ using Nethereum.HdWallet;
 using System.Security.Cryptography;
 using System.IO;
 using NodeBlock.Engine.Attributes;
+using System.Linq;
 
 namespace NodeBlock.Plugin.Ethereum.Nodes.Wallet.ManagedWallet
 {
@@ -22,18 +23,27 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Wallet.ManagedWallet
             Gwei = 1;
         }
 
+        private static Random random = new Random();
         public Storage.Entities.ManagedWallet ManagedWalletEntity { get; }
         public int Gwei { get; set; }
 
-        public static Tuple<string, string> GenerateNewAddress(string password)
+        public static string RandomString(int length)
         {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+              .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
+        public static Tuple<string, string> GenerateNewAddress()
+        {
+            string seed = RandomString(64);
             using (RijndaelManaged rijndael = new RijndaelManaged())
             {
                 rijndael.Key = Encoding.Default.GetBytes(Environment.GetEnvironmentVariable("managed_wallet_key"));
                 rijndael.IV = Encoding.Default.GetBytes(Environment.GetEnvironmentVariable("managed_wallet_key_iv"));
                 ICryptoTransform encryptor = rijndael.CreateEncryptor(rijndael.Key, rijndael.IV);
                 Mnemonic mnemo = new Mnemonic(Wordlist.English, WordCount.Twelve);
-                var wallet = new Nethereum.HdWallet.Wallet(mnemo.ToString(), password);
+                var wallet = new Nethereum.HdWallet.Wallet(mnemo.ToString(), seed);
                 var privateKey = wallet.GetPrivateKey(0);
 
                 return new Tuple<string, string>(wallet.GetAddresses(1)[0], privateKey.ToString());
@@ -41,8 +51,9 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Wallet.ManagedWallet
         }
 
         [ExportableObject("ManagedEthereumWallet.GetOrCreateManagedWallet")]
-        public static ManagedWallet GetOrCreateManagedWallet(int walletId, string name, string password)
+        public static ManagedWallet GetOrCreateManagedWallet(int walletId, string name)
         {
+            string seed = RandomString(64);
             using (var scope = Plugin.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetService<Storage.DatabaseStorage>();
@@ -55,7 +66,7 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Wallet.ManagedWallet
                         rijndael.IV = Encoding.Default.GetBytes(Environment.GetEnvironmentVariable("managed_wallet_key_iv"));
                         ICryptoTransform encryptor = rijndael.CreateEncryptor(rijndael.Key, rijndael.IV);
                         Mnemonic mnemo = new Mnemonic(Wordlist.English, WordCount.Twelve);
-                        var wallet = new Nethereum.HdWallet.Wallet(mnemo.ToString(), password);
+                        var wallet = new Nethereum.HdWallet.Wallet(mnemo.ToString(), seed);
 
                         // Encrypt the private key
                         var privateKeyEncrypted = string.Empty;
@@ -78,7 +89,7 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Wallet.ManagedWallet
                             Name = name,
                             PublicKey = wallet.GetAddresses(1)[0],
                             PrivateKey = privateKeyEncrypted,
-                            Password = password,
+                            Password = seed,
                             CreatedAt = DateTime.UtcNow,
                             UpdatedAt = DateTime.UtcNow
                         };

@@ -45,11 +45,11 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Uniswap
                 this.contractAddress = this.InParameters["contractAddress"].GetValue().ToString();
 
             EthConnection ethConnection = this.InParameters["connection"].GetValue() as EthConnection;
-            if (ethConnection.UseManaged)
-            {
-                ethLogsSubscription = Plugin.EventsManagerEth.NewEventTypeUniswapSwap(this, this.contractAddress);
-                return;
-            }
+            //if (ethConnection.UseManaged)
+            //{
+            //    ethLogsSubscription = Plugin.EventsManagerEth.NewEventTypeUniswapSwap(this, this.contractAddress);
+            //    return;
+            //}
 
             var filterTransfers = Event<SwapEventDTOBase>.GetEventABI().CreateFilterInput(this.contractAddress);
             this.ethLogsSubscription = new CustomUniswapSwapEvent(ethConnection.SocketClient);

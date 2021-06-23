@@ -264,13 +264,13 @@ namespace NodeBlock.Plugin.Ethereum.Nodes
 
         
 
-        public CustomUniswapSwapEvent NewEventTypeUniswapSwap(IEventEthereumNode attachedNode)
+        public CustomUniswapSwapEvent NewEventTypeUniswapSwap(IEventEthereumNode attachedNode, string from)
         {
             CustomUniswapSwapEvent newEvent = new CustomUniswapSwapEvent(SocketClient);
             string type = newEvent.GetType().ToString();
             if (!Events.ContainsKey(type))
             {
-                var filterTransfers = Event<Uniswap.Entities.UniswapPair.SwapEventDTOBase>.GetEventABI().CreateFilterInput();
+                var filterTransfers = Event<Uniswap.Entities.UniswapPair.SwapEventDTOBase>.GetEventABI().CreateFilterInput(from);
                 newEvent.SubscriptionDataResponse += OnEvent;
                 newEvent.SubscribeAsync(filterTransfers).Wait();
             }

@@ -47,11 +47,11 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Uniswap
             EthConnection ethConnection = this.InParameters["connection"].GetValue() as EthConnection;
             if (ethConnection.UseManaged)
             {
-                ethLogsSubscription = Plugin.EventsManagerEth.NewEventTypeUniswapSwap(this);
+                ethLogsSubscription = Plugin.EventsManagerEth.NewEventTypeUniswapSwap(this, this.contractAddress);
                 return;
             }
 
-            var filterTransfers = Event<SwapEventDTOBase>.GetEventABI().CreateFilterInput();
+            var filterTransfers = Event<SwapEventDTOBase>.GetEventABI().CreateFilterInput(this.contractAddress);
             this.ethLogsSubscription = new CustomUniswapSwapEvent(ethConnection.SocketClient);
             ethLogsSubscription.SubscriptionDataResponse += OnEventNode;
             ethLogsSubscription.SubscribeAsync(filterTransfers).Wait();
@@ -75,7 +75,6 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Uniswap
             StreamingEventArgs<Nethereum.RPC.Eth.DTOs.FilterLog> eventData = e;
             var decoded = Event<SwapEventDTOBase>.DecodeEvent(eventData.Response);
             if (decoded == null) return;
-            if (!string.IsNullOrEmpty(contractAddress) && eventData.Response.Address.ToLower() != contractAddress.ToLower()) return;
 
             var instanciatedParameters = this.InstanciateParametersForCycle();
             instanciatedParameters["transactionHash"].SetValue(eventData.Response.TransactionHash);

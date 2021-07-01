@@ -22,7 +22,7 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Santiment.Nodes
             this.OutParameters.Add("santiment", new NodeParameter(this, "santiment", typeof(SantimentConnector), true));
         }
 
-        public SantimentAPI Client;
+        public ElrondWebAPI Client;
 
         public override bool CanBeExecuted => false;
 
@@ -30,7 +30,7 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Santiment.Nodes
 
         public override void SetupConnector()
         {
-            this.Client = new SantimentAPI(this.InParameters["apiKey"].GetValue().ToString());
+            this.Client = new ElrondWebAPI(this.InParameters["apiKey"].GetValue().ToString());
             this.Next();
         }
 

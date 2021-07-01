@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace NodeBlock.Plugin.Ethereum.Nodes.Santiment
 {
-    public class SantimentAPI
+    public class ElrondWebAPI
     {
         public string APIKey { get; }
         private HttpClient client = new HttpClient();
         private string baseUrl = "https://api.santiment.net/graphql";
 
-        public SantimentAPI(string apiKey)
+        public ElrondWebAPI(string apiKey)
         {
             APIKey = apiKey;
             this.client.DefaultRequestHeaders.Add("Authorization", "Apikey " + this.APIKey);

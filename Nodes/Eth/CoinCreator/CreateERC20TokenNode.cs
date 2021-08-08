@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
 
+
 namespace NodeBlock.Plugin.Ethereum.Nodes.Eth.CoinCreator
 {
     [NodeDefinition("CreateERC20TokenNode", "Create ERC20 Token", NodeTypeEnum.Deployer, "Blockchain.Ethereum.ERC20")]
@@ -15,6 +16,7 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Eth.CoinCreator
         public CreateERC20TokenNode(string id, BlockGraph graph)
           : base(id, graph, typeof(CreateERC20TokenNode).Name)
         {
+ 
             this.InParameters.Add("name", new NodeParameter(this, "name", typeof(string), true));
             this.InParameters.Add("symbol", new NodeParameter(this, "symbol", typeof(string), true));
             this.InParameters.Add("owner", new NodeParameter(this, "owner", typeof(string), true));

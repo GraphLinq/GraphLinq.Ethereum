@@ -46,6 +46,7 @@ namespace NodeBlock.Plugin.Ethereum.Nodes
 
                 this.Web3Client = Plugin.Web3ClientETH;
                 this.SocketClient = Plugin.SocketClientETH;
+
             }
             else
             {

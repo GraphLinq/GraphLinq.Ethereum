@@ -20,8 +20,7 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Eth.CoinCreator
             this.InParameters.Add("name", new NodeParameter(this, "name", typeof(string), true));
             this.InParameters.Add("symbol", new NodeParameter(this, "symbol", typeof(string), true));
             this.InParameters.Add("owner", new NodeParameter(this, "owner", typeof(string), true));
-            this.InParameters.Add("maxSupply", new NodeParameter(this, "maxSupply", typeof(string), true));
-            this.InParameters.Add("initialSupply", new NodeParameter(this, "initialSupply", typeof(string), true));
+            this.InParameters.Add("totalSupply", new NodeParameter(this, "totalSupply", typeof(string), true));
 
             this.OutParameters.Add("erc20", new NodeParameter(this, "erc20", typeof(ERC20CreatorModel), false));
         }
@@ -38,8 +37,8 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Eth.CoinCreator
             this.ERC20Token.Name = this.InParameters["name"].GetValue().ToString();
             this.ERC20Token.Symbol = this.InParameters["symbol"].GetValue().ToString();
             this.ERC20Token.Owner = this.InParameters["owner"].GetValue().ToString();
-            this.ERC20Token.MaxSupply = BigInteger.Parse(this.InParameters["maxSupply"].GetValue().ToString());
-            this.ERC20Token.InitialSupply = BigInteger.Parse(this.InParameters["initialSupply"].GetValue().ToString());
+            this.ERC20Token.MaxSupply = BigInteger.Parse(this.InParameters["totalSupply"].GetValue().ToString());
+            this.ERC20Token.InitialSupply = BigInteger.Parse(this.InParameters["totalSupply"].GetValue().ToString());
 
             this.OutParameters["erc20"].SetValue(this.ERC20Token);
             return true;

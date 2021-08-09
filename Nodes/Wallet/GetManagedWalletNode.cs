@@ -9,11 +9,11 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Wallet
     [NodeDefinition("GetManagedWallet", "Get Personal Managed Wallet", NodeTypeEnum.Function, "Ethereum Managed Wallet")]
     [NodeGraphDescription("Get an Ethereum Managed Wallet for on-chain operation from your created accounts on the Dapp")]
     [NodeSpecialActionAttribute("How managed wallet work ?", "open_url", "#")]
-    [NodeIDEParameters(Hidden = true)]
+    [NodeIDEParameters(Hidden = false)]
     public class GetManagedWallet : Node
     {
         public GetManagedWallet(string id, BlockGraph graph)
-          : base(id, graph, typeof(CreateManagedWalletNode).Name)
+          : base(id, graph, typeof(GetManagedWallet).Name)
         {
             this.InParameters.Add("walletName", new NodeParameter(this, "walletName", typeof(string), true));
 

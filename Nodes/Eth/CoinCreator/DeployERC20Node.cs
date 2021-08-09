@@ -19,6 +19,8 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Eth.CoinCreator
         {
             this.InParameters.Add("wallet", new NodeParameter(this, "wallet", typeof(ManagedWallet), true));
             this.InParameters.Add("erc20", new NodeParameter(this, "erc20", typeof(ERC20CreatorModel), true));
+
+            this.OutParameters.Add("contractAddress", new NodeParameter(this, "contractAddress", typeof(string), false));
         }
 
         public Models.ERC20CreatorModel ERC20Token { get; set; }
@@ -40,16 +42,26 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Eth.CoinCreator
                 Deployer = erc20.Owner,
                 Name = erc20.Name,
                 Symbol = erc20.Symbol,
-                InitialSupply = erc20.InitialSupply,
-                TotalSupply = erc20.MaxSupply
+                Decimals = 18,
+                Supply = erc20.MaxSupply
             };
 
             var deploymentHandler = web3.Eth.GetContractDeploymentHandler<StandardTokenContract>();
-            var transactionReceipt1 = deploymentHandler.SendRequestAndWaitForReceiptAsync(deploymentMessage).Result;
-            var address = transactionReceipt1.ContractAddress;
+            try
+            {
+                this.Graph.AppendLog("info", string.Format("Deploying token {0} contract with wallet {1} ({2}): owner -> {3} ", erc20.Name, account.Address, wallet.ManagedWalletEntity.Name, erc20.Owner));
+                var transactionReceipt1 = deploymentHandler.SendRequestAndWaitForReceiptAsync(deploymentMessage).Result;
+                var address = transactionReceipt1.ContractAddress;
 
-            this.OutParameters["contractAddress"].SetValue(address);
-            return true;
+                this.OutParameters["contractAddress"].SetValue(address);
+                return true;
+            }
+            catch (Exception error)
+            {
+                
+                this.Graph.AppendLog("error", error.ToString());
+                return false;
+            }
         }
     }
 }

@@ -58,7 +58,7 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Eth.CoinCreator
             }
             catch (Exception error)
             {
-                
+
                 this.Graph.AppendLog("error", error.ToString());
                 return false;
             }

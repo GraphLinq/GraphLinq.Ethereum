@@ -9,7 +9,7 @@ using System.Text;
 
 namespace NodeBlock.Plugin.Ethereum.Nodes.BSC.CoinCreator
 {
-    [NodeDefinition("CreateBEP20TokenNode", "Create BEP20 Token", NodeTypeEnum.Deployer, "Blockchain.BSC.ERC20")]
+    [NodeDefinition("CreateBEP20TokenNode", "Create BEP20 Token", NodeTypeEnum.Deployer, "Blockchain.BSC.BEP20")]
     [NodeGraphDescription("Create a new BEP20 token instance")]
     public class CreateBEP20TokenNode : Node
     {

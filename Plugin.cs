@@ -27,6 +27,9 @@ namespace NodeBlock.Plugin.Ethereum
         public static string WEB_3_API_URL_BSC = "";
         public static string WEB_3_WS_URL_BSC = "";
 
+        public static string WEB_3_API_URL_POLYGON = "";
+        public static string WEB_3_WS_URL_POLYGON = "";
+
         public static object mutex = new object();
 
         public static Web3 Web3ClientETH { get; set; }
@@ -35,13 +38,18 @@ namespace NodeBlock.Plugin.Ethereum
         public static Web3 Web3ClientBSC { get; set; }
         public static StreamingWebSocketClient SocketClientBSC { get; set; }
 
-        public static ManagedEthereumEvents EventsManagerEth { get; set; }
+        public static Web3 Web3ClientPOLYGON { get; set; }
+        public static StreamingWebSocketClient SocketClientPOLYGON { get; set; }
 
+        public static ManagedEthereumEvents EventsManagerEth { get; set; }
         public static ManagedEthereumEvents EventsManagerBsc { get; set; }
+        public static ManagedEthereumEvents EventsManagerPolygon { get; set; }
 
         public static bool PluginAlive = true;
 
         public static ServiceProvider Services;
+
+        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         public override void Load()
         {
@@ -52,18 +60,52 @@ namespace NodeBlock.Plugin.Ethereum
             Web3ClientETH = new Web3(WEB_3_API_URL_ETH);
             SocketClientETH = new StreamingWebSocketClient(WEB_3_WS_URL_ETH);
 
-            SocketClientETH.StartAsync().Wait();
+            try
+            {
+                SocketClientETH.StartAsync().Wait();
+                logger.Info("Success! Connected to ETH network");
+            }
+            catch(Exception exception)
+            {
+                logger.Error("Failed connecting to ETH network: {0}", exception.Message);
+            }
 
 
             // BSC
             WEB_3_API_URL_BSC = Environment.GetEnvironmentVariable("bsc_api_http_url");
             WEB_3_WS_URL_BSC = Environment.GetEnvironmentVariable("bsc_api_ws_url");
 
-
             Web3ClientBSC = new Web3(WEB_3_API_URL_BSC);
             SocketClientBSC = new StreamingWebSocketClient(WEB_3_WS_URL_BSC);
 
-            SocketClientBSC.StartAsync().Wait();
+            try
+            {
+                SocketClientBSC.StartAsync().Wait();
+                logger.Info("Success! Connected to BSC network");
+            }
+            catch(Exception exception)
+            {
+                logger.Error("Failed connecting to BSC network: {0}", exception.Message);
+            }
+
+
+            // Polygon (MATIC)
+            WEB_3_API_URL_POLYGON = Environment.GetEnvironmentVariable("polygon_api_http_url");
+            WEB_3_WS_URL_POLYGON = Environment.GetEnvironmentVariable("polygon_api_ws_url");
+
+            Web3ClientPOLYGON = new Web3(WEB_3_API_URL_POLYGON);
+            SocketClientPOLYGON = new StreamingWebSocketClient(WEB_3_WS_URL_POLYGON);
+
+            try
+            {
+                SocketClientPOLYGON.StartAsync().Wait();
+                logger.Info("Success! Connected to POLYGON network");
+            }
+            catch(Exception exception)
+            {
+                logger.Error("Failed connecting to POLYGON network: {0}", exception.Message);
+
+            }
 
             // Init database plugin
             Services = new ServiceCollection()
@@ -82,6 +124,8 @@ namespace NodeBlock.Plugin.Ethereum
             EventsManagerEth = new ManagedEthereumEvents(SocketClientETH, new Web3(WEB_3_WS_URL_ETH));
             // bsc events
             EventsManagerBsc = new ManagedEthereumEvents(SocketClientBSC, new Web3(WEB_3_WS_URL_BSC));
+            // polygon events
+            EventsManagerPolygon = new ManagedEthereumEvents(SocketClientPOLYGON, new Web3(WEB_3_WS_URL_POLYGON));
         }
 
     }

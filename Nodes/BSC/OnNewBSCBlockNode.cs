@@ -22,7 +22,6 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.BSC
             this.InParameters.Add("connection", new NodeParameter(this, "connection", typeof(string), true));
 
             this.OutParameters.Add("block", new NodeParameter(this, "block", typeof(Nethereum.RPC.Eth.DTOs.Block), true));
-
         }
 
         public override bool CanBeExecuted => false;

@@ -20,6 +20,8 @@ using Nethereum.JsonRpc.WebSocketClient;
 using Newtonsoft.Json;
 using static NodeBlock.Plugin.Ethereum.Nodes.BSC.PankakeSwap.Entities.PancakeSwapFactory;
 using static NodeBlock.Plugin.Ethereum.Nodes.BSC.PankakeSwap.Entities.PankakeSwapPairContract;
+using static NodeBlock.Plugin.Ethereum.Nodes.Quickswap.Entities.QuickswapFactoryV2;
+using static NodeBlock.Plugin.Ethereum.Nodes.Quickswap.Entities.QuickswapPair;
 using System.Reflection;
 using Nethereum.RPC.Reactive.Eth;
 
@@ -61,6 +63,15 @@ namespace NodeBlock.Plugin.Ethereum.Nodes
     {
         public EthLogsSubscription Subscription;
         public PancakeSwapNewSwapEvent(IStreamingClient client) : base(client)
+        {
+
+        }
+    }
+
+    public class QuickswapNewSwapEvent : EthLogsSubscription
+    {
+        public EthLogsSubscription Subscription;
+        public QuickswapNewSwapEvent(IStreamingClient client) : base(client)
         {
 
         }
@@ -269,7 +280,20 @@ namespace NodeBlock.Plugin.Ethereum.Nodes
             return newEvent;
         }
 
-        
+        public QuickswapNewSwapEvent NewEventTypeQuickswapNewSwap(IEventEthereumNode attachedNode)
+        {
+            QuickswapNewSwapEvent newEvent = new QuickswapNewSwapEvent(SocketClient);
+            string type = newEvent.GetType().ToString();
+            if (!Events.ContainsKey(type))
+            {
+                var filterTransfers = Event<Quickswap.Entities.QuickswapPair.SwapEventDTOBase>.GetEventABI().CreateFilterInput();
+                newEvent.SubscriptionDataResponse += OnEvent;
+                newEvent.SubscribeAsync(filterTransfers).Wait();
+            }
+
+            AddNodeEvent(attachedNode, newEvent);
+            return newEvent;
+        }
 
         public CustomUniswapSwapEvent NewEventTypeUniswapSwap(IEventEthereumNode attachedNode, string from)
         {

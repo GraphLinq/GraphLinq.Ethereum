@@ -5,6 +5,7 @@ using Nethereum.RPC.Reactive.Eth.Subscriptions;
 using Nethereum.Web3;
 using NodeBlock.Engine;
 using NodeBlock.Engine.Attributes;
+using NodeBlock.Plugin.Ethereum.Nodes.Polygon;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,9 +13,9 @@ using static NodeBlock.Plugin.Ethereum.Nodes.Quickswap.Entities.QuickswapPair;
 
 namespace NodeBlock.Plugin.Ethereum.Nodes.Quickswap
 {
-    [NodeDefinition("OnQuickswapSwapNode", "On Quickswap Swap SWAP", NodeTypeEnum.Event, "Quickswap")]
-    [NodeGraphDescription("SWAP Event that trigger on each new swap request on Quickswap from a specific token smart-contract address")]
-    [NodeIDEParameters(Hidden = true)]
+    [NodeDefinition("OnQuickswapSwapNode", "On Quickswap Swap", NodeTypeEnum.Event, "Quickswap")]
+    [NodeGraphDescription("Event that trigger on each new swap request on Quickswap from a specific token smart-contract address")]
+    [NodeIDEParameters(Hidden = false)]
     public class OnQuickswapSwapNode : Node
     {
         public OnQuickswapSwapNode(string id, BlockGraph graph)
@@ -46,13 +47,7 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Quickswap
             if (this.InParameters["contractAddress"].GetValue() != null)
                 this.contractAddress = this.InParameters["contractAddress"].GetValue().ToString();
 
-            EthConnection ethConnection = this.InParameters["connection"].GetValue() as EthConnection;
-            //if (ethConnection.UseManaged)
-            //{
-            //    ethLogsSubscription = Plugin.EventsManagerEth.NewEventTypeUniswapSwap(this, this.contractAddress);
-            //    return;
-            //}
-
+            PolygonConnectorNode ethConnection = this.InParameters["connection"].GetValue() as PolygonConnectorNode;
             var filterTransfers = ethConnection.Web3Client.Eth.GetEvent<SwapEventDTOBase>(this.contractAddress).CreateFilterInput();
             this.ethLogsSubscription = new EthLogsObservableSubscription(ethConnection.SocketClient);
             this.ethLogsSubscription.GetSubscriptionDataResponsesAsObservable().Subscribe(log =>
@@ -67,7 +62,7 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Quickswap
 
         public override void OnStop()
         {
-            EthConnection ethConnection = this.InParameters["connection"].GetValue() as EthConnection;
+            PolygonConnectorNode ethConnection = this.InParameters["connection"].GetValue() as PolygonConnectorNode;
             this.ethLogsSubscription.UnsubscribeAsync().Wait();
         }
     

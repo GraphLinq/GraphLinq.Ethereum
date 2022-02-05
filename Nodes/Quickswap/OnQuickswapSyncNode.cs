@@ -4,6 +4,7 @@ using Nethereum.RPC.Eth.Subscriptions;
 using Nethereum.Web3;
 using NodeBlock.Engine;
 using NodeBlock.Engine.Attributes;
+using NodeBlock.Plugin.Ethereum.Nodes.Polygon;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,7 +14,7 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Quickswap
 {
     [NodeDefinition("OnQuickswapSyncNode", "On Quickswap Sync", NodeTypeEnum.Event, "Quickswap")]
     [NodeGraphDescription("Event that occurs on liquidity providers update on a specific contract address, returning the reserve of both token left in the pool")]
-    [NodeIDEParameters(Hidden = true)]
+    [NodeIDEParameters(Hidden = false)]
     public class OnQuickswapSyncNode : Node, IEventEthereumNode
     {
         public OnQuickswapSyncNode(string id, BlockGraph graph)
@@ -39,7 +40,7 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Quickswap
         {
             if (this.InParameters["contractAddress"].GetValue() != null)
                 this.contractAddress = this.InParameters["contractAddress"].GetValue().ToString();
-            EthConnection ethConnection = this.InParameters["connection"].GetValue() as EthConnection;
+            PolygonConnectorNode ethConnection = this.InParameters["connection"].GetValue() as PolygonConnectorNode;
             if (ethConnection.UseManaged)
             {
                 ethLogsSubscription = Plugin.EventsManagerEth.NewEventTypeUniswapSync(this);

@@ -31,8 +31,8 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Quickswap.Swap
             this.InParameters.Add("slippage", new NodeParameter(this, "slippage", typeof(double), true));
         }
 
-        public const string ROUTER_ADDR = "0x7a250d5630b4cf539739df2c5dacb4c659f2488d";
-        public const string FACTORY_ADDR = "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f";
+        public const string ROUTER_ADDR = "0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff";
+        public const string FACTORY_ADDR = "0x5757371414417b8C6CAad45bAeF941aBc7d3Ab32";
 
         public override bool CanBeExecuted => true;
 

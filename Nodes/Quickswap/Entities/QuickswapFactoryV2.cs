@@ -102,10 +102,10 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Quickswap.Entities
             public virtual string FeeToSetter { get; set; }
         }
 
-        public partial class PairCreatedEventDTO : PairCreatedEventDTOBase { }
+        public partial class PairCreatedEventDTO : QsPairCreatedEventDTOBase { }
 
         [Event("PairCreated")]
-        public class PairCreatedEventDTOBase : IEventDTO
+        public class QsPairCreatedEventDTOBase : IEventDTO
         {
             [Parameter("address", "token0", 1, true)]
             public virtual string Token0 { get; set; }

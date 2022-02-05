@@ -46,8 +46,8 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Unicrypt
             EthConnection ethConnection = this.InParameters["connection"].GetValue() as EthConnection;
             var contractHandler = ethConnection.Web3Client.Eth.GetContractHandler(this.InParameters["address"].GetValue().ToString());
 
-            var totalLiquidity = 0d;
-            var totalLiquidityUsd = 0d;
+            //var totalLiquidity = 0d;
+            //var totalLiquidityUsd = 0d;
             //var numLockTokensRequest = contractHandler.QueryAsync<GetNumLockedTokensFunction, BigInteger>(new GetNumLockedTokensFunction()
             //{ });
             //numLockTokensRequest.Wait();

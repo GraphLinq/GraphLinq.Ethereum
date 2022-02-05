@@ -13,13 +13,13 @@ using static NodeBlock.Plugin.Ethereum.Nodes.Eth.Models.ERC20;
 
 namespace NodeBlock.Plugin.Ethereum.Nodes.Quickswap
 {
-    [NodeDefinition("GetLiquidityProviderTokenPriceNode", "Get Quickswap LP Token Price", NodeTypeEnum.Function, "Quickswap")]
+    [NodeDefinition("GetQsLiquidityProviderTokenPriceNode", "Get Quickswap LP Token Price", NodeTypeEnum.Function, "Quickswap")]
     [NodeGraphDescription("Return the price of the LP token")]
-    [NodeIDEParameters(Hidden = true)]
-    public class GetLiquidityProviderTokenPriceNode : Node
+    [NodeIDEParameters(Hidden = false)]
+    public class GetQsLiquidityProviderTokenPriceNode : Node
     {
-        public GetLiquidityProviderTokenPriceNode(string id, BlockGraph graph)
-           : base(id, graph, typeof(GetLiquidityProviderTokenPriceNode).Name)
+        public GetQsLiquidityProviderTokenPriceNode(string id, BlockGraph graph)
+           : base(id, graph, typeof(GetQsLiquidityProviderTokenPriceNode).Name)
         {
             this.InParameters.Add("ethConnection", new NodeParameter(this, "ethConnection", typeof(object), true));
             this.InParameters.Add("lpTokenAddress", new NodeParameter(this, "lpTokenAddress", typeof(string), true));

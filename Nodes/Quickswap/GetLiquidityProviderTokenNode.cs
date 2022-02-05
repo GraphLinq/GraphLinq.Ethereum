@@ -1,5 +1,6 @@
 ﻿using NodeBlock.Engine;
 using NodeBlock.Engine.Attributes;
+using NodeBlock.Plugin.Ethereum.Nodes.Polygon;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,13 +8,13 @@ using static NodeBlock.Plugin.Ethereum.Nodes.Quickswap.Entities.QuickswapV2ERC20
 
 namespace NodeBlock.Plugin.Ethereum.Nodes.Quickswap
 {
-    [NodeDefinition("GetLiquidityProviderTokenNode", "Get Quickswap LP Token", NodeTypeEnum.Function, "Quickswap")]
-    [NodeGraphDescription("Return all informations about a liquidity provider token")]
-    [NodeIDEParameters(Hidden = true)]
-    public class GetLiquidityProviderTokenNode : Node
+    [NodeDefinition("GetQsLiquidityProviderTokenNode", "Get Quickswap LP Token", NodeTypeEnum.Function, "Quickswap")]
+    [NodeGraphDescription("Return all information about a liquidity provider token")]
+    [NodeIDEParameters(Hidden = false)]
+    public class GetQsLiquidityProviderTokenNode : Node
     {
-        public GetLiquidityProviderTokenNode(string id, BlockGraph graph)
-            : base(id, graph, typeof(GetLiquidityProviderTokenNode).Name)
+        public GetQsLiquidityProviderTokenNode(string id, BlockGraph graph)
+            : base(id, graph, typeof(GetQsLiquidityProviderTokenNode).Name)
         {
             this.InParameters.Add("ethConnection", new NodeParameter(this, "ethConnection", typeof(object), true));
             this.InParameters.Add("address", new NodeParameter(this, "address", typeof(string), true));
@@ -29,7 +30,7 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Quickswap
 
         public override bool OnExecution()
         {
-            EthConnection ethConnection = this.InParameters["ethConnection"].GetValue() as EthConnection;
+            PolygonConnectorNode ethConnection = this.InParameters["ethConnection"].GetValue() as PolygonConnectorNode;
             var contractHandler = ethConnection.Web3Client.Eth.GetContractHandler(this.InParameters["address"].GetValue().ToString());
             var nameTask = contractHandler.QueryAsync<NameFunction, string>();
             nameTask.Wait();

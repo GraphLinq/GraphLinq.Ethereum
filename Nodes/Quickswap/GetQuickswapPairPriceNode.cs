@@ -13,7 +13,7 @@ using System.Text;
 
 namespace NodeBlock.Plugin.Ethereum.Nodes.Quickswap
 {
-    [NodeDefinition("GetQuickswapPairPriceNode", "Quickswap Get Pair Price", NodeTypeEnum.Function, "Quickswap")]
+    [NodeDefinition("GetQuickswapPairPriceNode", "Get Quickswap Pair Price", NodeTypeEnum.Function, "Quickswap")]
     [NodeGraphDescription("Return the pair price of an Quickswap pool as out parameters")]
     public class GetQuickswapPairPriceNode : Node
     {

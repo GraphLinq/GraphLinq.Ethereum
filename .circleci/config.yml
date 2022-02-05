@@ -1,27 +1,14 @@
 version: 2.1
 orbs:
   slack: circleci/slack@4.7.1
-commands:
-  notify_slack_error:
-    steps:
-      - slack/notify:
-          event: fail
-          template: basic_fail_1
-
-  notify_slack_pass:
-    steps:
-      - slack/notify:
-          event: pass
-          template: basic_success_1
 jobs:
   build:
     environment:
-      BUILD_VERSION: 1.0.25
+      BUILD_VERSION: 1.0.24
     docker:
       - image: mcr.microsoft.com/dotnet/sdk:3.1
     steps:
       - checkout
-      - trigger_slack_notification
       - run:
           name: Clone GraphLinq.Engine
           command: git clone https://github.com/GraphLinq/GraphLinq.Engine.git ../GraphLinq.Engine
@@ -46,8 +33,7 @@ jobs:
       - run:
           name: Publish nuget
           command: dotnet nuget push "nuget_build/GraphLinq.Ethereum.$BUILD_VERSION.nupkg" --api-key $GITHUB_TOKEN --source "graphlinq"  --no-service-endpoint
-      - notify_slack_error
-      - notify_slack_pass
+      - slack/notify
 workflows:
   version: 2
   build-master:

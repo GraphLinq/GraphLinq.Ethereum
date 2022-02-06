@@ -1,6 +1,4 @@
 version: 2.1
-orbs:
-  slack: circleci/slack@4.7.1
 jobs:
   build:
     environment:
@@ -33,7 +31,6 @@ jobs:
       - run:
           name: Publish nuget
           command: dotnet nuget push "nuget_build/GraphLinq.Ethereum.$BUILD_VERSION.nupkg" --api-key $GITHUB_TOKEN --source "graphlinq"  --no-service-endpoint
-      - slack/notify
 workflows:
   version: 2
   build-master:

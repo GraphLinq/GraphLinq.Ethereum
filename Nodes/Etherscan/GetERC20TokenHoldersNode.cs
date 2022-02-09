@@ -30,13 +30,14 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Etherscan
         public override bool OnExecution()
         {
             var tokenAddr = this.InParameters["tokenContract"].GetValue().ToString();
-            var response = client.GetAsync("https://etherscan.io/token/" + tokenAddr).Result;
-            var content = response.Content.ReadAsStringAsync().Result;
-            var context = BrowsingContext.New(Configuration.Default);
-            var contextTask = context.OpenAsync(req => req.Content(content));
-            contextTask.Wait();
-            var document = contextTask.Result;
-            var holderStr = document.QuerySelector("#ContentPlaceHolder1_tr_tokenHolders .mr-3").TextContent.Trim().Split(" ")[0].Replace(",", "");
+            //var response = client.GetAsync("https://etherscan.io/token/" + tokenAddr).Result;
+            //var content = response.Content.ReadAsStringAsync().Result;
+            //var context = BrowsingContext.New(Configuration.Default);
+            //var contextTask = context.OpenAsync(req => req.Content(content));
+            //contextTask.Wait();
+            //var document = contextTask.Result;
+            //var holderStr = document.QuerySelector("#ContentPlaceHolder1_tr_tokenHolders .mr-3").TextContent.Trim().Split(" ")[0].Replace(",", "");
+            var holderStr = "0";
             
             var holders = int.Parse(holderStr);
 

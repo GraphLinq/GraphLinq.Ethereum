@@ -10,7 +10,7 @@ using NodeBlock.Plugin.Ethereum;
 namespace NodeBlock.Plugin.Ethereum.Nodes
 {
     [NodeDefinition("OnNewTransactionEventNode", "On Ethereum Transaction", NodeTypeEnum.Event, "Blockchain.Ethereum")]
-    [NodeGraphDescription("Event that occurs everytime a new ethereum transaction appears in the last network block")]
+    [NodeGraphDescription("Event that occurs every time a new Ethereum transaction appears in the last network block")]
     public class OnNewTransactionEventNode : Node, IEventEthereumNode
     {
         private EthNewPendingTransactionSubscription ethNewPendingTransactionSubscription;

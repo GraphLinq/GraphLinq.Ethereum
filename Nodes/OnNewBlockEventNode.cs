@@ -11,7 +11,7 @@ using System.Text;
 namespace NodeBlock.Plugin.Ethereum.Nodes
 {
     [NodeDefinition("OnNewBlockEventNode", "On Ethereum Block", NodeTypeEnum.Event, "Blockchain.Ethereum")]
-    [NodeGraphDescription("Event that occurs everytime a new ethereum block is minted")]
+    [NodeGraphDescription("Event that occurs every time a new Ethereum block is minted")]
     public class OnNewBlockEventNode : Node, IEventEthereumNode
     {
         private EthNewBlockHeadersObservableSubscription blockHeadersSubscription;
@@ -43,10 +43,10 @@ namespace NodeBlock.Plugin.Ethereum.Nodes
                 this.blockHeadersSubscription = new EthNewBlockHeadersObservableSubscription(ethConnection.SocketClient);
                 blockHeadersSubscription.GetSubscriptionDataResponsesAsObservable().Subscribe(async Block =>
                 {
-                    var instanciatedParameters = this.InstanciateParametersForCycle();
-                    instanciatedParameters["block"].SetValue(Block);
+                    var instanciateParameters = this.InstanciateParametersForCycle();
+                    instanciateParameters["block"].SetValue(Block);
 
-                    this.Graph.AddCycle(this, instanciatedParameters);
+                    this.Graph.AddCycle(this, instanciateParameters);
                 });
                 blockHeadersSubscription.SubscribeAsync();
             }
@@ -72,10 +72,10 @@ namespace NodeBlock.Plugin.Ethereum.Nodes
 
         public void OnEventNode(object sender, dynamic e)
         {
-            var instanciatedParameters = this.InstanciateParametersForCycle();
-            instanciatedParameters["block"].SetValue(e);
+            var instanciateParameters = this.InstanciateParametersForCycle();
+            instanciateParameters["block"].SetValue(e);
 
-            this.Graph.AddCycle(this, instanciatedParameters);
+            this.Graph.AddCycle(this, instanciateParameters);
         }
     }
 }

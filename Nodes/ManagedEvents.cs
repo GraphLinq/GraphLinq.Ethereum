@@ -14,6 +14,7 @@ using System.Linq;
 using NodeBlock.Plugin.Ethereum.Nodes;
 using System.Threading.Tasks;
 using static NodeBlock.Plugin.Ethereum.Nodes.Uniswap.Entities.UniswapPair;
+using static NodeBlock.Plugin.Ethereum.Nodes.UniswapV3.Entities.UniswapPairV3;
 using Nethereum.Contracts;
 using Nethereum.RPC.Reactive.Eth.Subscriptions;
 using Nethereum.JsonRpc.WebSocketClient;

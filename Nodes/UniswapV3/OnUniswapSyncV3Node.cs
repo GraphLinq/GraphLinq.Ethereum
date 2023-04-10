@@ -21,7 +21,7 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.UniswapV3
         {
             this.IsEventNode = true;
 
-            this.InParameters.Add("connection", new NodeParameter(this, "connection", typeof(string), true));
+            this.InParameters.Add("ethConnection", new NodeParameter(this, "ethConnection", typeof(object), true));
             this.InParameters.Add("contractAddress", new NodeParameter(this, "contractAddress", typeof(string), true));
 
             this.OutParameters.Add("reserve0", new NodeParameter(this, "reserve0", typeof(string), false));
@@ -40,7 +40,7 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.UniswapV3
             if (this.InParameters["contractAddress"].GetValue() != null)
                 this.contractAddress = this.InParameters["contractAddress"].GetValue().ToString();
 
-            EthConnection ethConnection = this.InParameters["connection"].GetValue() as EthConnection;
+            EthConnection ethConnection = this.InParameters["ethConnection"].GetValue() as EthConnection;
             if (ethConnection.UseManaged)
             {
                 ethLogsSubscription = Plugin.EventsManagerEth.NewEventTypeUniswapSync(this);
@@ -55,7 +55,7 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.UniswapV3
 
         public override void OnStop()
         {
-            EthConnection ethConnection = this.InParameters["connection"].GetValue() as EthConnection;
+            EthConnection ethConnection = this.InParameters["ethConnection"].GetValue() as EthConnection;
             if (ethConnection.UseManaged)
             {
                 string eventType = ethLogsSubscription.GetType().ToString();

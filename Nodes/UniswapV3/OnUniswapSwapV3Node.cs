@@ -72,16 +72,16 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Uniswap
     
         private void OnEvent(SwapEventDTOBaseV3 evt, string txHash)
         {
-            var instanciateParameters = this.InstanciateParametersForCycle();
-            instanciateParameters["transactionHash"].SetValue(txHash);
-            instanciateParameters["sender"].SetValue(evt.Sender);
-            instanciateParameters["to"].SetValue(evt.To);
-            instanciateParameters["amount0In"].SetValue(Web3.Convert.FromWei(evt.Amount0In));
-            instanciateParameters["amount1In"].SetValue(Web3.Convert.FromWei(evt.Amount1In));
-            instanciateParameters["amount0Out"].SetValue(Web3.Convert.FromWei(evt.Amount0Out));
-            instanciateParameters["amount1Out"].SetValue(Web3.Convert.FromWei(evt.Amount1Out));
+            var instanciatedParameters = this.InstanciatedParametersForCycle();
+            instanciatedParameters["transactionHash"].SetValue(txHash);
+            instanciatedParameters["sender"].SetValue(evt.Sender);
+            instanciatedParameters["to"].SetValue(evt.To);
+            instanciatedParameters["amount0In"].SetValue(Web3.Convert.FromWei(evt.Amount0In));
+            instanciatedParameters["amount1In"].SetValue(Web3.Convert.FromWei(evt.Amount1In));
+            instanciatedParameters["amount0Out"].SetValue(Web3.Convert.FromWei(evt.Amount0Out));
+            instanciatedParameters["amount1Out"].SetValue(Web3.Convert.FromWei(evt.Amount1Out));
 
-            this.Graph.AddCycle(this, instanciateParameters);
+            this.Graph.AddCycle(this, instanciatedParameters);
         }
 
         public override void BeginCycle()

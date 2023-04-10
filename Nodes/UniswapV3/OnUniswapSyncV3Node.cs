@@ -72,11 +72,11 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.UniswapV3
             var decoded = Event<SyncEventDTOBaseV3>.DecodeEvent(e.Response);
             if (decoded == null) return;
             if (!string.IsNullOrEmpty(contractAddress) && eventData.Response.Address.ToLower() != contractAddress.ToLower()) return;
-            var instanciateParameters = this.InstanciateParametersForCycle();
+            var instanciatedParameters = this.InstanciatedParametersForCycle();
 
-            instanciateParameters["reserve0"].SetValue(Web3.Convert.FromWei(decoded.Event.Reserve0));
-            instanciateParameters["reserve1"].SetValue(Web3.Convert.FromWei(decoded.Event.Reserve1));
-            this.Graph.AddCycle(this, instanciateParameters);
+            instanciatedParameters["reserve0"].SetValue(Web3.Convert.FromWei(decoded.Event.Reserve0));
+            instanciatedParameters["reserve1"].SetValue(Web3.Convert.FromWei(decoded.Event.Reserve1));
+            this.Graph.AddCycle(this, instanciatedParameters);
         }
 
         public override void BeginCycle()

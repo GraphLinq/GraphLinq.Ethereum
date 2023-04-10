@@ -43,10 +43,10 @@ namespace NodeBlock.Plugin.Ethereum.Nodes
                 this.blockHeadersSubscription = new EthNewBlockHeadersObservableSubscription(ethConnection.SocketClient);
                 blockHeadersSubscription.GetSubscriptionDataResponsesAsObservable().Subscribe(async Block =>
                 {
-                    var instanciateParameters = this.InstanciateParametersForCycle();
-                    instanciateParameters["block"].SetValue(Block);
+                    var instanciatedParameters = this.InstanciatedParametersForCycle();
+                    instanciatedParameters["block"].SetValue(Block);
 
-                    this.Graph.AddCycle(this, instanciateParameters);
+                    this.Graph.AddCycle(this, instanciatedParameters);
                 });
                 blockHeadersSubscription.SubscribeAsync();
             }
@@ -72,10 +72,10 @@ namespace NodeBlock.Plugin.Ethereum.Nodes
 
         public void OnEventNode(object sender, dynamic e)
         {
-            var instanciateParameters = this.InstanciateParametersForCycle();
-            instanciateParameters["block"].SetValue(e);
+            var instanciatedParameters = this.InstanciatedParametersForCycle();
+            instanciatedParameters["block"].SetValue(e);
 
-            this.Graph.AddCycle(this, instanciateParameters);
+            this.Graph.AddCycle(this, instanciatedParameters);
         }
     }
 }

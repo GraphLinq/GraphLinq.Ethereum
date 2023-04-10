@@ -56,7 +56,7 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.BSC.Wallet
             var blockInformations = await ethConnection.Web3Client.Eth.Blocks.GetBlockWithTransactionsByNumber.SendRequestAsync(Block.Number);
             foreach (var tx in blockInformations.Transactions)
             {
-                var instanciatedParameters = this.InstanciateParametersForCycle();
+                var instanciatedParameters = this.InstanciatedParametersForCycle();
 
                 if (tx.From != null && this.InParameters["walletAddress"].GetValue().ToString().ToLower() == tx.From.ToLower())
                 {

@@ -77,7 +77,7 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.BSC.PankakeSwap
             if (decoded == null) return;
             if (!string.IsNullOrEmpty(contractAddress) && eventData.Response.Address.ToLower() != contractAddress.ToLower()) return;
 
-            var instanciatedParameters = this.InstanciateParametersForCycle();
+            var instanciatedParameters = this.InstanciatedParametersForCycle();
             instanciatedParameters["sender"].SetValue(decoded.Event.Sender);
             instanciatedParameters["to"].SetValue(decoded.Event.To);
             instanciatedParameters["amount0In"].SetValue(Web3.Convert.FromWei(decoded.Event.Amount0In));

@@ -72,7 +72,7 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Uniswap
     
         private void OnEvent(SwapEventDTOBase evt, string txHash)
         {
-            var instanciatedParameters = this.InstanciateParametersForCycle();
+            var instanciatedParameters = this.InstanciatedParametersForCycle();
             instanciatedParameters["transactionHash"].SetValue(txHash);
             instanciatedParameters["sender"].SetValue(evt.Sender);
             instanciatedParameters["to"].SetValue(evt.To);

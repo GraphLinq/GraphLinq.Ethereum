@@ -45,13 +45,10 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.UniswapV3
             var content = new StringContent(query, Encoding.UTF8, "application/json");
             var response = client.PostAsync("https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3", content).Result;
             var result = JsonConvert.DeserializeObject<UniswapPairGraphPriceV3>(response.Content.ReadAsStringAsync().Result);
-            Console.WriteLine("here");
-            Console.WriteLine(result.ToString());
 
             var contractHandler = ethConnection.Web3Client.Eth.GetContractHandler(lpTokenAddress);
             var supplyTask = contractHandler.QueryAsync<TotalSupplyFunctionV3, BigInteger>();
             supplyTask.Wait();
-            Console.WriteLine(supplyTask.Result);
             var token0PriceUsd = double.Parse(result.Root.Bundle.EthPriceUSD, CultureInfo.InvariantCulture);
             var token1PriceUsd = double.Parse(result.Root.Pool.Token1Price, CultureInfo.InvariantCulture) * double.Parse(result.Root.Bundle.EthPriceUSD, CultureInfo.InvariantCulture);
             var lpTokenSupply = (double)Web3.Convert.FromWei(supplyTask.Result);

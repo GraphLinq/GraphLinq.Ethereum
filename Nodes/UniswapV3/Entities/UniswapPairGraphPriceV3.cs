@@ -32,10 +32,12 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.UniswapV3.Entities
 
         public class Data
         {
-            [JsonProperty("pool")]
-            public Pool Pool { get; set; }
             [JsonProperty("bundle")]
             public Bundle Bundle { get; set; }
+
+            [JsonProperty("pool")]
+            public Pool Pool { get; set; }
+
         }
 
     }

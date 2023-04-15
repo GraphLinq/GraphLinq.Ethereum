@@ -55,7 +55,7 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Unicrypt
                         var decoded = Event<OnDepositEventDTOBase>.DecodeEvent(log);
                         if (decoded == null) return;
 
-                        var instanciatedParameters = this.InstanciateParametersForCycle();
+                        var instanciatedParameters = this.InstanciatedParametersForCycle();
                         instanciatedParameters["lpToken"].SetValue(decoded.Event.LpToken);
                         instanciatedParameters["user"].SetValue(decoded.Event.User);
                         instanciatedParameters["amount"].SetValue(Web3.Convert.FromWei(decoded.Event.Amount));

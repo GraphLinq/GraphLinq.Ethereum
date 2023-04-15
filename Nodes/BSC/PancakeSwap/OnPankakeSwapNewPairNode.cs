@@ -76,7 +76,7 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.BSC.PankakeSwap
                 var decoded = Event<PairCreatedEventDTOBase>.DecodeEvent(eventData.Response);
                 if (decoded == null) return;
 
-                var instanciatedParameters = this.InstanciateParametersForCycle();
+                var instanciatedParameters = this.InstanciatedParametersForCycle();
                 instanciatedParameters["token0"].SetValue(decoded.Event.Token0);
                 instanciatedParameters["token1"].SetValue(decoded.Event.Token1);
                 instanciatedParameters["pair"].SetValue(decoded.Event.Pair);

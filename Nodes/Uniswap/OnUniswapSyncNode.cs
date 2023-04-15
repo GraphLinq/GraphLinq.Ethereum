@@ -70,7 +70,7 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.Uniswap
             var decoded = Event<SyncEventDTOBase>.DecodeEvent(e.Response);
             if (decoded == null) return;
             if (!string.IsNullOrEmpty(contractAddress) && eventData.Response.Address.ToLower() != contractAddress.ToLower()) return;
-            var instanciatedParameters = this.InstanciateParametersForCycle();
+            var instanciatedParameters = this.InstanciatedParametersForCycle();
 
             instanciatedParameters["reserve0"].SetValue(Web3.Convert.FromWei(decoded.Event.Reserve0));
             instanciatedParameters["reserve1"].SetValue(Web3.Convert.FromWei(decoded.Event.Reserve1));

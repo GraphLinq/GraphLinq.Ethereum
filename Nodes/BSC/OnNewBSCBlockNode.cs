@@ -9,7 +9,7 @@ using NodeBlock.Engine.Attributes;
 namespace NodeBlock.Plugin.Ethereum.Nodes.BSC
 {
     [NodeDefinition("OnNewBscBlockNode", "On Binance Smart Chain Block", NodeTypeEnum.Event, "Blockchain.BSC")]
-    [NodeGraphDescription("Event that occurs everytime a new bsc block is minted")]
+    [NodeGraphDescription("Event that occurs every time a new bsc block is minted")]
     public class OnNewBSCBlockNode : Node, IEventEthereumNode
     {
         private EthNewBlockHeadersObservableSubscription blockHeadersSubscription;
@@ -40,7 +40,7 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.BSC
                 this.blockHeadersSubscription = new EthNewBlockHeadersObservableSubscription(ethConnection.SocketClient);
                 blockHeadersSubscription.GetSubscriptionDataResponsesAsObservable().Subscribe(async Block =>
                 {
-                    var instanciatedParameters = this.InstanciateParametersForCycle();
+                    var instanciatedParameters = this.InstanciatedParametersForCycle();
                     instanciatedParameters["block"].SetValue(Block);
 
                     this.Graph.AddCycle(this, instanciatedParameters);
@@ -69,7 +69,7 @@ namespace NodeBlock.Plugin.Ethereum.Nodes.BSC
 
         public void OnEventNode(object sender, dynamic e)
         {
-            var instanciatedParameters = this.InstanciateParametersForCycle();
+            var instanciatedParameters = this.InstanciatedParametersForCycle();
             instanciatedParameters["block"].SetValue(e);
 
             this.Graph.AddCycle(this, instanciatedParameters);

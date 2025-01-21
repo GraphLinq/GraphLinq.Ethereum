@@ -30,6 +30,8 @@ namespace NodeBlock.Plugin.Ethereum
         public static string WEB_3_API_URL_POLYGON = "";
         public static string WEB_3_WS_URL_POLYGON = "";
 
+        public static string WEB_3_API_URL_GRAPHLINQ = "";
+
         public static object mutex = new object();
 
         public static Web3 Web3ClientETH { get; set; }
@@ -41,9 +43,12 @@ namespace NodeBlock.Plugin.Ethereum
         public static Web3 Web3ClientPOLYGON { get; set; }
         public static StreamingWebSocketClient SocketClientPOLYGON { get; set; }
 
+        public static Web3 Web3ClientGRAPHLINQ { get; set; }
+
         public static ManagedEthereumEvents EventsManagerEth { get; set; }
         public static ManagedEthereumEvents EventsManagerBsc { get; set; }
         public static ManagedEthereumEvents EventsManagerPolygon { get; set; }
+        //public static ManagedGraphlinqEvents EventsManagerGraphlinq { get; set; }
 
         public static bool PluginAlive = true;
 
@@ -106,6 +111,10 @@ namespace NodeBlock.Plugin.Ethereum
                 logger.Error("Failed connecting to POLYGON network: {0}", exception.Message);
 
             }
+
+            // GraphLinq (GLQ)
+            WEB_3_API_URL_GRAPHLINQ = Environment.GetEnvironmentVariable("glq_chain_rpc_url");
+            Web3ClientGRAPHLINQ = new Web3(WEB_3_API_URL_GRAPHLINQ);
 
             // Init database plugin
             Services = new ServiceCollection()
